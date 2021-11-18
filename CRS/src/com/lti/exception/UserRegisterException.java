@@ -5,7 +5,7 @@ public class UserRegisterException extends Exception{
 	@Override
 	public String getMessage() {
 		
-		return "User Registration Exception";
+		return "User Registration Faild";
 	}
 
 }

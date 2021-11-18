@@ -31,6 +31,7 @@ public class GradeServiceOperation implements GradeServiceInterface {
 		HashMap<Integer, String> hashMap2 = new HashMap<Integer, String>();
 		hashMap2.put(courseId, grade);
 		hashMap.put(studentId, hashMap2);
-	}
+
+		}
 
 }
