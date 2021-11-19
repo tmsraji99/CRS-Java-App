@@ -2,9 +2,11 @@ package com.lti.main;
 
 import java.util.Scanner;
 
+import com.lti.exception.InvalidLoginException;
 import com.lti.model.Admin;
 import com.lti.model.Professor;
 import com.lti.model.Student;
+import com.lti.model.User;
 import com.lti.service.UserServiceInterface;
 import com.lti.service.UserServiceOperation;
 
@@ -21,15 +23,28 @@ public class UserMain {
 
 		//user login landing page
 		while(true) {
-			System.out.println("Enter your profile");
+
+			System.out.println("*******WELCOME TO CRS***********");
+			System.out.println("Enter your credentials");
+
+			// fetching input for user credentials
+			System.out.println("Enter UserName");                          
+			String username= sc.next();
+			System.out.println("Enter password");
+			String password= sc.next();
+
+			User checkedUser=null;
+			try {
+				checkedUser = userOperation.validateUser(username, password);
+			} catch (InvalidLoginException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Integer profile= checkedUser.getRoleId();
+			Integer userId= checkedUser.getUserId();
 
 			
-			Integer profile= Integer.parseInt(sc.next());
 			
-			System.out.println("Enter user id");
-			
-			Integer userId = Integer.parseInt(sc.nextLine());
-
 				switch(profile) {
 				// if user is a student
 				case 1:

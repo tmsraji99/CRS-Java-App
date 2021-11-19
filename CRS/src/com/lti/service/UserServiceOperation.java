@@ -3,6 +3,9 @@ package com.lti.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.lti.dao.UserDaoInterface;
+import com.lti.dao.UserDaoOperation;
+import com.lti.exception.InvalidLoginException;
 import com.lti.model.Admin;
 import com.lti.model.Professor;
 import com.lti.model.Student;
@@ -10,14 +13,20 @@ import com.lti.model.User;
 
 public class UserServiceOperation implements UserServiceInterface {
 
-	// validating users by checking their credentials
-	public User validateUser(String username, String password)  {
-		return null;
+	UserDaoInterface userDao = new UserDaoOperation();
+
+	public User validateUser(String username, String password) throws InvalidLoginException {
+		User user = userDao.validateUser(username, password);
+
+		if (user == null)
+			throw new InvalidLoginException();
+		return user;
+
 	}
 
 	// fetching student details from student databse against studentId
 	public Student fetchStudent(Integer studentId) {
-		return studentList.get(studentId);
+		return userDao.fetchStudent(studentId);
 	}
 
 	// fetching admin details from admin databse against adminId
@@ -115,21 +124,23 @@ public class UserServiceOperation implements UserServiceInterface {
 	// display details of all students
 	public void displayStudents() {
 		System.out.println(" Llist of Students.......");
-		studentList.entrySet().forEach(a->System.out.println(a));
-		System.out.println();}
+		studentList.entrySet().forEach(a -> System.out.println(a));
+		System.out.println();
+	}
 
 	// display details of all professors
 	public void displayProfessors() {
 
 		System.out.println("List of Professors.....");
-		professorList.entrySet().forEach(a->System.out.println(a));
-		System.out.println();}
+		professorList.entrySet().forEach(a -> System.out.println(a));
+		System.out.println();
+	}
 
 	// display details of all admins
 	public void displayAdmins() {
 
 		System.out.println("List of Admins......");
-		adminList.entrySet().forEach(a->System.out.println(a));
+		adminList.entrySet().forEach(a -> System.out.println(a));
 		System.out.println();
 	}
 

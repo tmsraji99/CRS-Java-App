@@ -1,5 +1,6 @@
 package com.lti.service;
 
+import com.lti.exception.InvalidLoginException;
 import com.lti.model.Admin;
 import com.lti.model.Professor;
 import com.lti.model.Student;
@@ -7,7 +8,7 @@ import com.lti.model.User;
 
 public interface UserServiceInterface {
 
-	public User validateUser(String username, String password) ;
+	public User validateUser(String username, String password) throws InvalidLoginException;
 
 	public Student fetchStudent(Integer studentId);
 

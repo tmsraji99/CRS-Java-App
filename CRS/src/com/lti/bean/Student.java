@@ -1,7 +1,7 @@
-package com.lti.model;
+package com.lti.bean;
 
-public class Student extends User{
-	
+public class Student {
+
 	private Integer StudentId;
 	private String name;
 	private String gender;
@@ -9,14 +9,7 @@ public class Student extends User{
 	private Integer semester;
 	private String branch;
 	private Boolean registrationStatus;
-	private Integer scholarshipPercentage;	
-	
-	public Boolean getRegistrationStatus() {
-		return registrationStatus;
-	}
-	public void setRegistrationStatus(Boolean registrationStatus) {
-		this.registrationStatus = registrationStatus;
-	}
+	private Integer scholarshipPercentage;
 	public Integer getStudentId() {
 		return StudentId;
 	}
@@ -38,8 +31,8 @@ public class Student extends User{
 	public Long getPhoneNumber() {
 		return phoneNumber;
 	}
-	public void setPhoneNumber(long i) {
-		this.phoneNumber = i;
+	public void setPhoneNumber(Long phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 	public Integer getSemester() {
 		return semester;
@@ -53,16 +46,19 @@ public class Student extends User{
 	public void setBranch(String branch) {
 		this.branch = branch;
 	}
-	
+	public Boolean getRegistrationStatus() {
+		return registrationStatus;
+	}
+	public void setRegistrationStatus(Boolean registrationStatus) {
+		this.registrationStatus = registrationStatus;
+	}
 	public Integer getScholarshipPercentage() {
 		return scholarshipPercentage;
 	}
 	public void setScholarshipPercentage(Integer scholarshipPercentage) {
 		this.scholarshipPercentage = scholarshipPercentage;
 	}
-	public void setPhoneNumber(Long phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
 	
-
+	
+	
 }

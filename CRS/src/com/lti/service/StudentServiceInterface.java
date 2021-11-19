@@ -12,10 +12,7 @@ public interface StudentServiceInterface {
 	void addCourse(Integer courseId, Student student);
 
 	void dropCourse(Integer courseId, Student student);
-
-	double calculatPayment(Student student);
-
-	void registerCourse(Long studentId, Set<Course> courses);
+	public void displaySelectedCourses(Student student);
 
 	List<List<Grades>> viewGrades(String semester, Integer student_id, Integer year);
 

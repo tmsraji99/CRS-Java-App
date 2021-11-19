@@ -7,8 +7,8 @@ public interface RegistrationServiceInterface {
 
 	public void submitRegistration(Student student);
 
-	public void generateRegistrationReciept(Student student, double payableAmount, int payModeId);
+	public void generateRegistrationReciept(Student student, Double payableAmount, Integer payModeId);
 
-	public void displayRegisteredStudentsInCourse(int courseId);
+	public void displayRegisteredStudentsInCourse(Integer courseId);
 
 }

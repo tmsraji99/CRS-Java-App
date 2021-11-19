@@ -1,44 +1,47 @@
 package com.lti.service;
 
-import java.util.HashMap;
+import java.util.List;
 
-import com.lti.dummy.CourseDummy;
+import com.lti.dao.CourseDaoInterface;
+import com.lti.dao.CourseDaoOperation;
 import com.lti.exception.CourseNotFoundException;
 import com.lti.model.Course;
 import com.lti.model.Student;
 
-public class CourseServiceOperation implements CourseServiceInterface{
+public class CourseServiceOperation implements CourseServiceInterface {
 
-	HashMap<Integer, Course> courseList = new HashMap<Integer, Course>();
+	CourseDaoInterface courseDao = new CourseDaoOperation();
 
-	public HashMap<Integer, Course> getCourseList() {
-		return courseList;
-	}
-	public void setCourseList(HashMap<Integer, Course> courseList) {
-		this.courseList = courseList;
-	}
-	
-	// display list of available courses for student 
 	public void displayCourses(Student student) {
-		
+		System.out.println(
+				"****************************************LIST OF AVAILABLE COURSES*****************************************1****");
+		System.out.println(
+				"COURSE ID      COURSE TITLE                          COUSRE DESCRIPTION                         CREDITS         ");
+		List<Course> courses = courseDao.displayCourses(student);
+		for (Course course : courses) {
+			if (course.getStudentsEnrolled() < 10) {
+				System.out
+						.println(course.getCourseId() + "               " + course.getCourseTitle() + "               "
+								+ course.getCourseDescription() + "                  " + course.getCredits());
 			}
+		}
+		System.out.println(
+				"*************************************************************************************************************");
+	}
+
 	// insert a new course in database
 	public void insertCourse(Course course) {
-	
-		courseList.put(course.getCourseId(), course);
+
 	}
 
-	//delete an existing course
-	public void deleteCourse(Integer courseId)throws CourseNotFoundException{
-		courseList.remove(courseId);
+	// delete an existing course
+	public void deleteCourse(Integer courseId) throws CourseNotFoundException {
+
 	}
 
-	//display available courses for professor to select
+	// display available courses for professor to select
 	public void displayCoursesProfessor() {
-		System.out.println(" List of courses....");
-		courseList.entrySet().forEach(a->System.out.println(a));
+		
 	}
-
-
 
 }

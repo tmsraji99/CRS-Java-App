@@ -6,7 +6,17 @@ public class Course {
 	private Integer credits;
 	private Integer catalogId;
 	private Integer semester;
+	private String CourseDescription;
+	private String branch;
 	
+	
+	
+	public String getCourseDescription() {
+		return CourseDescription;
+	}
+	public void setCourseDescription(String courseDescription) {
+		CourseDescription = courseDescription;
+	}
 	public Integer getSemester() {
 		return semester;
 	}
@@ -62,22 +72,11 @@ public class Course {
 	public void setCatalogId(Integer catalogId) {
 		this.catalogId = catalogId;
 	}
-	public Course(Integer courseId, String courseTitle, String courseDescription, Integer credits, Integer catalogId, Integer semester,
-			String time_stamp, Integer studentsEnrolled, String grade) {
-		super();
-		this.courseId = courseId;
-		this.courseTitle = courseTitle;
-		this.credits = credits;
-		this.catalogId = catalogId;
-		this.semester = semester;
-		this.time_stamp = time_stamp;
-		this.studentsEnrolled = studentsEnrolled;
-		this.grade = grade;
+	public String getBranch() {
+		return branch;
 	}
-	public Course() {
-		super();
+	public void setBranch(String branch) {
+		this.branch = branch;
 	}
-	
-	
 
 }
