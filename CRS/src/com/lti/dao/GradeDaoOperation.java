@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.lti.constant.SQlQueries;
 import com.lti.model.Course;
 import com.lti.model.Student;
 import com.lti.utils.DBUtils;
@@ -24,7 +25,7 @@ public class GradeDaoOperation implements GradeDaoInterface{
 		try {
 
 			//Declaring prepared statement and executing query
-			stmt= connection.prepareStatement(com.lti.constant.Student.VIEW_GRADES);
+			stmt= connection.prepareStatement(SQlQueries.VIEW_GRADES);
 			stmt.setInt(1, student.getStudentId());
 
 			ResultSet rs = stmt.executeQuery();
@@ -36,7 +37,7 @@ public class GradeDaoOperation implements GradeDaoInterface{
 				Course course = new Course();
 
 				course.setCourseId(rs.getInt("CourseID"));
-				course.setCourseTitle(rs.getString("CourseTitle"));
+				course.setCourseTitle(rs.getString("Title"));
 				course.setGrade(rs.getString("Grade"));
 
 				list.add(course);
@@ -47,7 +48,7 @@ public class GradeDaoOperation implements GradeDaoInterface{
 		catch(SQLException ex) {
 			System.out.println(ex.getMessage());
 		}finally{
-			closeConnection(connection,stmt);
+//			closeConnection(connection,stmt);
 		}
 		
 		return null;
@@ -61,7 +62,11 @@ public class GradeDaoOperation implements GradeDaoInterface{
 
 		try {
 			//Declaring prepared statement and executing query
-			 stmt = connection.prepareStatement("");
+			 stmt = connection.prepareStatement(SQlQueries.UPLOAD_GRADES);
+
+				stmt.setInt(2, studentId);
+				stmt.setInt(3, courseId);
+				stmt.setString(1, grade);
 
 			//Executing query
 			stmt.executeUpdate();
@@ -70,22 +75,8 @@ public class GradeDaoOperation implements GradeDaoInterface{
 		} catch (SQLException ex) {
 			System.out.println(ex.getMessage());
 		}finally{
-			closeConnection(connection,stmt);
+			//closeConnection(connection,stmt);
 		}
 		
 	}
-		private void closeConnection(Connection conn, PreparedStatement stmt) {
-			try{
-				if(stmt!=null)
-					stmt.close();
-			}catch(SQLException se2){
-			}// nothing we can do
-			try{
-				if(conn!=null)
-					conn.close();
-			}catch(SQLException se){
-				System.out.println(se.getMessage());
-			}
-		}	}
-
-
+}

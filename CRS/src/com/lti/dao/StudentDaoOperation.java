@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.lti.constant.SQlQueries;
 import com.lti.model.Course;
 import com.lti.model.Student;
 import com.lti.utils.DBUtils;
@@ -14,7 +15,7 @@ import com.lti.utils.DBUtils;
 public class StudentDaoOperation implements StudentDaoInterface{
 	
 	
-	public void addCourse(int courseId ,Student student)  {
+	public void addCourse(Integer courseId ,Student student)  {
 
 		//Establishing the connection
 		Connection connection = DBUtils.getConnection();
@@ -22,7 +23,7 @@ public class StudentDaoOperation implements StudentDaoInterface{
 
 		try {
 			//Declaring prepared statement and executing query
-			stmt = connection.prepareStatement(com.lti.constant.Student.ADD_COURSE);			
+			stmt = connection.prepareStatement(SQlQueries.ADD_COURSE);			
 			int studentId= student.getStudentId();
 
 			stmt.setInt(1, studentId);
@@ -30,18 +31,21 @@ public class StudentDaoOperation implements StudentDaoInterface{
 
 			//Executing query
 			stmt.executeUpdate();
+			System.out.println("Course with courseId="+courseId+" added!");
+			
+			
 
 		} catch (SQLException ex) {
 			System.out.println(ex.getMessage());
 		}finally{
-			closeConnection(connection,stmt);
+			//closeConnection(connection,stmt);
 		}
 		
 
 	}
 
 	// drop a course by student against a courseID
-	public void dropCourse(int courseId, Student student) {
+	public void dropCourse(Integer courseId, Student student) {
 
 		//Establishing the connection
 		Connection connection = DBUtils.getConnection();
@@ -49,7 +53,7 @@ public class StudentDaoOperation implements StudentDaoInterface{
 		try {
 
 
-			stmt=connection.prepareStatement(com.lti.constant.Student.DROP_COURSE);
+			stmt=connection.prepareStatement(SQlQueries.DROP_COURSE);
 			int studentId= student.getStudentId();
 
 			stmt.setInt(1, studentId);
@@ -63,7 +67,7 @@ public class StudentDaoOperation implements StudentDaoInterface{
 		} catch (SQLException ex) {
 			System.out.println(ex.getMessage());
 		}finally{
-			closeConnection(connection,stmt);
+			//closeConnection(connection,stmt);
 		}
 		
 		System.out.println("Course not found !");
@@ -76,47 +80,37 @@ public class StudentDaoOperation implements StudentDaoInterface{
 		Connection connection= DBUtils.getConnection();
 		PreparedStatement stmt= null;
 
+		List<Course> list= new ArrayList<Course>();
 		try {
 
-			stmt= connection.prepareStatement(com.lti.constant.Student.VIEW_SELECTED_COURSES);
+			stmt= connection.prepareStatement(SQlQueries.VIEW_SELECTED_COURSES);
 			stmt.setInt(1, student.getStudentId());
 
 
 			ResultSet rs = stmt.executeQuery();
 
-			List<Course> list= new ArrayList<Course>();
 
 			//Creating ArrayList of courses
 			while(rs.next())
 			{
 				Course course = new Course();
 				course.setCourseId(rs.getInt("CourseID"));
-				course.setCourseTitle(rs.getString("CourseTitle"));
+				course.setCourseTitle(rs.getString("Title"));
 				course.setCredits(rs.getInt("Credits"));
-				course.setTime_stamp(rs.getString("TimeStamp"));
+				course.setTime_stamp(rs.getString("Date_OF_REGISTRATION"));
 				list.add(course);
 			}
+			System.out.println(list.size());
 
 		}
 		catch(SQLException ex) {
 			System.out.println(ex.getMessage());
 		}finally{
-			closeConnection(connection,stmt);
+			//closeConnection(connection,stmt);
 		}
-		return null;
+return list;	
 	}
 
-	private void closeConnection(Connection conn, PreparedStatement stmt) {
-		try{
-			if(stmt!=null)
-				stmt.close();
-		}catch(SQLException se2){
-		}// nothing we can do
-		try{
-			if(conn!=null)
-				conn.close();
-		}catch(SQLException se){
-			System.out.println(se.getMessage());
-		}
-	}
+
+	
 }

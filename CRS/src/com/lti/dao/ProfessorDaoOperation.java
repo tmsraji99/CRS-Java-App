@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.lti.constant.SQlQueries;
 import com.lti.model.Course;
 import com.lti.model.Professor;
 import com.lti.utils.DBUtils;
@@ -20,18 +21,20 @@ public class ProfessorDaoOperation implements ProfessorDaoInterface{
 		PreparedStatement stmt= null;
 
 		try {
-			//Declaring prepared statement and executing query
-			stmt = connection.prepareStatement("");
+			stmt = connection.prepareStatement(SQlQueries.SELECT_COURSE);
 
+			int professorId= professor.getProfessorId();
 
-			//Executing query
+			stmt.setInt(1, professorId);
+			stmt.setInt(2, courseId);
+
 			stmt.executeUpdate();
 			System.out.println("Course with courseId="+courseId+" selected to teach!");
 
 		} catch (SQLException ex) {
 			System.out.println(ex.getMessage());
 		}finally{
-			closeConnection(connection,stmt);
+			//closeConnection(connection,stmt);
 		}
 		
 		
@@ -46,11 +49,22 @@ public class ProfessorDaoOperation implements ProfessorDaoInterface{
 		PreparedStatement stmt= null;
 		try {
 
-			stmt=connection.prepareStatement("");
+			stmt=connection.prepareStatement(SQlQueries.DESELECT_COURSE);
+
+			stmt.setInt(1, courseId);
+			//Executing query
+			int rs = stmt.executeUpdate();
+			if(rs>0)
+			{
+				System.out.println("Course deselected !");
+				return;
+
+			}
+
 		} catch (SQLException ex) {
 			System.out.println(ex.getMessage());
 		}finally{
-			closeConnection(connection,stmt);
+			//closeConnection(connection,stmt);
 		}
 		
 		System.out.println("Course not found !");
@@ -66,7 +80,7 @@ public class ProfessorDaoOperation implements ProfessorDaoInterface{
 
 		try {
 
-			stmt= connection.prepareStatement("");
+			stmt= connection.prepareStatement(SQlQueries.DISPLAY_PROFESSOR_SELECTED_COURSES);
 			stmt.setInt(1, professor.getProfessorId());
 
 			ResultSet rs = stmt.executeQuery();
@@ -78,7 +92,7 @@ public class ProfessorDaoOperation implements ProfessorDaoInterface{
 			{
 				Course course = new Course();
 				course.setCourseId(rs.getInt("CourseID"));
-				course.setCourseTitle(rs.getString("CourseTitle"));
+				course.setCourseTitle(rs.getString("Title"));
 				course.setStudentsEnrolled(rs.getInt("NumberOfStudentsEnrolled"));
 
 				list.add(course);
@@ -91,23 +105,11 @@ public class ProfessorDaoOperation implements ProfessorDaoInterface{
 		catch(SQLException ex) {
 			System.out.println(ex.getMessage());
 		}finally{
-			closeConnection(connection,stmt);
+			//closeConnection(connection,stmt);
 		}
 		
 		return null;
 	}
-	private void closeConnection(Connection conn, PreparedStatement stmt) {
-		try{
-			if(stmt!=null)
-				stmt.close();
-		}catch(SQLException se2){
-		}// nothing we can do
-		try{
-			if(conn!=null)
-				conn.close();
-		}catch(SQLException se){
-			System.out.println(se.getMessage());
-		}
-	}
+	
 
 }

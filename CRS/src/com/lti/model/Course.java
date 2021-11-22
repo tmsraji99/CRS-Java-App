@@ -29,8 +29,10 @@ public class Course {
 	public void setTime_stamp(String time_stamp) {
 		this.time_stamp = time_stamp;
 	}
+
 	private String time_stamp;
 	private Integer studentsEnrolled;
+
 	public Integer getStudentsEnrolled() {
 		return studentsEnrolled;
 	}

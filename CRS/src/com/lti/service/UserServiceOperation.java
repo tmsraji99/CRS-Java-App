@@ -1,11 +1,11 @@
 package com.lti.service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import com.lti.dao.UserDaoInterface;
 import com.lti.dao.UserDaoOperation;
-import com.lti.exception.InvalidLoginException;
+import com.lti.exception.InvalidOptionException;
+import com.lti.exception.UserNotFoundException;
 import com.lti.model.Admin;
 import com.lti.model.Professor;
 import com.lti.model.Student;
@@ -15,133 +15,173 @@ public class UserServiceOperation implements UserServiceInterface {
 
 	UserDaoInterface userDao = new UserDaoOperation();
 
-	public User validateUser(String username, String password) throws InvalidLoginException {
+	public User validateUser(String username, String password) throws UserNotFoundException {
 		User user = userDao.validateUser(username, password);
+		
+			if (user == null) {
 
-		if (user == null)
-			throw new InvalidLoginException();
-		return user;
+				throw new UserNotFoundException("User not found");
+			}
+		 		return user;
 
 	}
 
 	// fetching student details from student databse against studentId
 	public Student fetchStudent(Integer studentId) {
+		//System.out.println(int);
 		return userDao.fetchStudent(studentId);
 	}
 
 	// fetching admin details from admin databse against adminId
 	public Admin fetchAdmin(Integer adminId) {
-		return adminList.get(adminId);
+		return userDao.fetchAdmin(adminId);
 	}
 
 	// fetching professor details from professor databse against professortId
 	public Professor fetchProfessor(Integer professorId) {
-		return professorList.get(professorId);
+		return userDao.fetchProfessor(professorId);
 	}
 
 	// create new user
 	public void createUser(User user) {
-
-	}
-
-	// create new student
-	private Map<Integer, Student> studentList = new HashMap<Integer, Student>();
-
-	public Map<Integer, Student> getStudentList() {
-		return studentList;
-	}
-
-	public void setStudentList(Map<Integer, Student> studentList) {
-		this.studentList = studentList;
+		userDao.createUser(user);
 	}
 
 	public void createStudent(Student student) {
-		studentList.put(student.getStudentId(), student);
 
-	}
-
-	// create new professor
-
-	private Map<Integer, Professor> professorList = new HashMap<Integer, Professor>();
-
-	public Map<Integer, Professor> getProfessorList() {
-		return professorList;
-	}
-
-	public void setProfessorList(Map<Integer, Professor> professorList) {
-		this.professorList = professorList;
+		userDao.createStudent(student);
 	}
 
 	public void createProfessor(Professor professor) {
-		professorList.put(professor.getProfessorId(), professor);
-	}
-
-	// create new admin
-	private Map<Integer, Admin> adminList = new HashMap<Integer, Admin>();
-
-	public Map<Integer, Admin> getAdminList() {
-		return adminList;
-	}
-
-	public void setAdminList(Map<Integer, Admin> adminList) {
-		this.adminList = adminList;
+		userDao.createProfessor(professor);
 	}
 
 	public void createAdmin(Admin admin) {
 
-		adminList.put(admin.getAdminId(), admin);
+		userDao.createAdmin(admin);
 	}
 
 	// update user against userId
 	public void updateUser(Integer userId, User user) {
-
+		
+		userDao.updateUser(userId, user);
 	}
 
 	// update student against studentId
 	public void updateStudent(Integer studentId, Student student) {
-		studentList.remove(studentId);
-		studentList.put(studentId, student);
-
+		userDao.updateStudent(studentId, student);
 	}
 
 	// update professor against professorId
 	public void updateProfessor(Integer professorId, Professor professor) {
-		professorList.remove(professorId);
-		professorList.put(professorId, professor);
+		userDao.updateProfessor(professorId, professor);
 	}
 
 	// update admin against adminId
 	public void updateAdmin(Integer adminId, Admin admin) {
-		adminList.remove(adminId);
-		adminList.put(adminId, admin);
+		userDao.updateAdmin(adminId, admin);
 	}
 
 	// delete user against userId
-	public void deleteUser(Integer userId, String query) {
-
+	public void deleteUser(Integer userId, String query) throws com.lti.exception.UserNotFoundException {
+		userDao.deleteUser(userId, query);
 	}
 
-	// display details of all students
 	public void displayStudents() {
-		System.out.println(" Llist of Students.......");
-		studentList.entrySet().forEach(a -> System.out.println(a));
-		System.out.println();
+		System.out.println(
+				"*********************************************LIST OF STUDENTS**********************************************");
+
+		List<Student> students = userDao.displayStudents();
+
+		students.stream().forEach(student -> {
+			if (student.getGender().equals("female"))
+				student.setName("Ms " + student.getName());
+			else
+				student.setName("Mr " + student.getName());
+		});
+		System.out.println(
+				"STUDENT ID      NAME         PHONE NUMBER    BRANCH    SEMESTER    REGISTRATION STATUS      SCHOLARSHIP PERCENTAGE");
+		for (Student student : students) {
+			System.out.println(student.getStudentId() + "         " + student.getName() + "          "
+					+ student.getPhoneNumber() + "        " + student.getBranch() + "        " + student.getSemester()
+					+ "                " + student.getRegistrationStatus() + "                      "
+					+ student.getScholarshipPercentage());
+		}
+		System.out.println(
+				"*************************************************************************************************************");
 	}
 
 	// display details of all professors
 	public void displayProfessors() {
+		System.out.println("****************************LIST OF PROFESSORS************************************");
 
-		System.out.println("List of Professors.....");
-		professorList.entrySet().forEach(a -> System.out.println(a));
-		System.out.println();
+		List<Professor> professors = userDao.displayProfessors();
+
+		professors.stream().forEach(professor -> {
+			if (professor.getGender().equals("female"))
+				professor.setName("Ms " + professor.getName());
+			else
+				professor.setName("Mr " + professor.getName());
+		});
+
+		System.out.println("PROFESSOR ID      NAME            PHONE NUMBER      DESIGNATION   ");
+		for (Professor professor : professors) {
+			System.out.println(professor.getProfessorId() + "         " + professor.getName() + "          "
+					+ professor.getPhoneNumber() + "        " + professor.getDesignation());
+
+		}
+		System.out
+				.println("*******************************************************************************************");
 	}
 
 	// display details of all admins
 	public void displayAdmins() {
+		System.out.println("**************LIST OF ADMINS****************");
 
-		System.out.println("List of Admins......");
-		adminList.entrySet().forEach(a -> System.out.println(a));
-		System.out.println();
+		List<Admin> admins = userDao.displayAdmins();
+
+		admins.stream().forEach(user -> {
+			if (user.getGender().equals("female"))
+				user.setName("Ms " + user.getName());
+			else
+				user.setName("Mr " + user.getName());
+		});
+		System.out.println("USER ID      NAME           PHONE NUMBER      ");
+		for (Admin admin : admins) {
+			System.out.println(
+					admin.getAdminId() + "         " + admin.getName() + "          " + admin.getPhoneNumber());
+
+		}
+		System.out.println("***********************************************");
+
 	}
 
-}
+	@Override
+	public void displayStudentsAdminApproval() {
+
+		System.out.println(
+				"*********************************************LIST OF STUDENTS**********************************************");
+
+		List<Student> students = userDao.displayStudentsAdminApproval();
+
+		students.stream().forEach(student -> {
+			if (student.getGender().equals("female"))
+				student.setName("Ms " + student.getName());
+			else
+				student.setName("Mr " + student.getName());
+		});
+		System.out.println(
+				"STUDENT ID      NAME         PHONE NUMBER    BRANCH    SEMESTER    REGISTRATION STATUS      SCHOLARSHIP PERCENTAGE");
+		for (Student student : students) {
+			System.out.println(student.getStudentId() + "         " + student.getName() + "          "
+					+ student.getPhoneNumber() + "        " + student.getBranch() + "        " + student.getSemester()
+					+ "                " + student.getRegistrationStatus() + "                      "
+					+ student.getScholarshipPercentage());
+		}
+		System.out.println(
+				"*************************************************************************************************************");
+	}
+
+	}
+
+

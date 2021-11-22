@@ -1,12 +1,13 @@
 package com.lti.service;
 
+import com.lti.dao.NotificationDaoOperation;
 import com.lti.model.Notification;
 import com.lti.model.Student;
 public class NotificationServiceOperation implements NotificationServiceInterface{
 
-	// displays the registration summary of student
+	NotificationDaoOperation dao=new NotificationDaoOperation();
 	public void showRegistrationReciept(Student student){
-		Notification notification=null;
+		Notification notification=dao.showRegistrationReciept(student);
 		System.out.println("***************************REGISTRATION RECIEPT***********************");
 		System.out.println("Registration ID : "+notification.getRegistrationId());
 		System.out.println("Student ID : "+notification.getStudentId());
@@ -20,6 +21,7 @@ public class NotificationServiceOperation implements NotificationServiceInterfac
 		else if(notification.getPayModeId()==3)
 			System.out.println("PaymentMode : 3, NETBANKING");
 		System.out.println("Registration Date : "+notification.getTimeStamp());
+		System.out.println("Message : Successfully Completed");
 		System.out.println("***********************************************************************");
 
 

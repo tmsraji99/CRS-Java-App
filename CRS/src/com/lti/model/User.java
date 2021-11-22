@@ -5,8 +5,16 @@ public class User {
 	private String userName;
 	private String userPassword;
 	private Integer roleId;
+	private String profile;
 	
 	
+	
+	public String getProfile() {
+		return profile;
+	}
+	public void setProfile(String profile) {
+		this.profile = profile;
+	}
 	public Integer getUserId() {
 		return userId;
 	}

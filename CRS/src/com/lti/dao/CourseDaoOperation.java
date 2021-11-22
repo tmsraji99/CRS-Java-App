@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.lti.constant.SQlQueries;
 import com.lti.exception.CourseNotFoundException;
 import com.lti.model.Course;
 import com.lti.model.Student;
@@ -26,9 +27,9 @@ public class CourseDaoOperation implements CourseDaoInterface {
 		try {
 			int semester = student.getSemester();
 			String branch = student.getBranch();
-			stmt = connection.prepareStatement(com.lti.constant.Student.DISPLAY_COURSES);
-			stmt.setInt(1, semester);
-			stmt.setString(2, branch);
+			stmt = connection.prepareStatement(SQlQueries.DISPLAY_COURSES);
+			//stmt.setInt(1, semester);
+			//stmt.setString(2, branch);
 
 			ResultSet rs = stmt.executeQuery();
 
@@ -40,8 +41,8 @@ public class CourseDaoOperation implements CourseDaoInterface {
 				course.setBranch(branch);
 				course.setSemester(semester);
 				course.setCourseId(rs.getInt("CourseID"));
-				course.setCourseTitle(rs.getString("CourseTitle"));
-				course.setCourseDescription(rs.getString("CourseDescription"));
+				course.setCourseTitle(rs.getString("Title"));
+				course.setCourseDescription(rs.getString("Description"));
 				course.setCatalogId(rs.getInt("CatalogId"));
 				course.setCredits(rs.getInt("Credits"));
 				list.add(course);
@@ -52,7 +53,7 @@ public class CourseDaoOperation implements CourseDaoInterface {
 		} catch (SQLException ex) {
 			System.out.print(ex.getMessage());
 		} finally {
-			closeConnection(connection, stmt);
+			//closeConnection(connection, stmt);
 		}
 
 		return null;
@@ -69,7 +70,7 @@ public class CourseDaoOperation implements CourseDaoInterface {
 
 		try {
 			// Declaring prepared statement and executing query
-			stmt = connection.prepareStatement(com.lti.constant.Student.INSERT_COURSE);
+			stmt = connection.prepareStatement(SQlQueries.INSERT_COURSE);
 			int courseID = course.getCourseId();
 			String title = course.getCourseTitle();
 			String description = course.getCourseDescription();
@@ -97,7 +98,7 @@ public class CourseDaoOperation implements CourseDaoInterface {
 	}
 
 	// delete a cousre from course database using course Id
-	public void deleteCourse(int courseId) throws CourseNotFoundException {
+	public void deleteCourse(Integer courseId) throws CourseNotFoundException {
 
 		// Establishing the connection
 		Connection connection = DBUtils.getConnection();
@@ -105,7 +106,7 @@ public class CourseDaoOperation implements CourseDaoInterface {
 		PreparedStatement stmt = null;
 		try {
 
-			stmt = connection.prepareStatement("");
+			stmt = connection.prepareStatement(SQlQueries.DELETE_COURSE + courseId);
 			// Executing query
 			int rs = stmt.executeUpdate();
 			if (rs > 0) {
@@ -129,38 +130,46 @@ public class CourseDaoOperation implements CourseDaoInterface {
 		PreparedStatement stmt = null;
 
 		try {
-			stmt = connection.prepareStatement("");
+			stmt= connection.prepareStatement(SQlQueries.DISPLAY_COURSES_PROFESSOR);
 			ResultSet rs = stmt.executeQuery();
 
-			List<Course> list = new ArrayList<Course>();
+			List<Course> list= new ArrayList<Course>();
 
-			// Creating ArrayList of courses
-			while (rs.next()) {
+			//Creating ArrayList of courses
+			while(rs.next())
+			{
+				Course course = new Course();
+				course.setBranch(rs.getString("Branch"));
+				course.setSemester(rs.getInt("Semester"));
+				course.setCourseId(rs.getInt("CourseID"));
+				course.setCourseTitle(rs.getString("Title"));
+				course.setCourseDescription(rs.getString("description"));
+				list.add(course);
 
 			}
 
-			// returning list of courses
+			//returning list of courses
 			return list;
 		} catch (SQLException ex) {
 			System.out.println(ex.getMessage());
 		} finally {
-			closeConnection(connection, stmt);
+			//closeConnection(connection, stmt);
 		}
 		return null;
 	}
 
-	private void closeConnection(Connection conn, PreparedStatement stmt) {
-		try {
-			if (stmt != null)
-				stmt.close();
-		} catch (SQLException se2) {
-		} // nothing we can do
-		try {
-			if (conn != null)
-				conn.close();
-		} catch (SQLException se) {
-			System.out.println(se.getMessage());
-		}
-	}
+//	private void closeConnection(Connection conn, PreparedStatement stmt) {
+//		try {
+//			if (stmt != null)
+//				stmt.close();
+//		} catch (SQLException se2) {
+//		} // nothing we can do
+//		try {
+//			if (conn != null)
+//				conn.close();
+//		} catch (SQLException se) {
+//			System.out.println(se.getMessage());
+//		}
+//	}
 
 }

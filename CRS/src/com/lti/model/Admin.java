@@ -5,7 +5,7 @@ public class Admin extends User{
 	private Integer adminId;
 	private String name;
 	private String gender;
-	private Long phoneNumber;
+	private Integer phoneNumber;
 	public Integer getAdminId() {
 		return adminId;
 	}
@@ -24,10 +24,10 @@ public class Admin extends User{
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-	public Long getPhoneNumber() {
+	public Integer getPhoneNumber() {
 		return phoneNumber;
 	}
-	public void setPhoneNumber(Long phoneNumber) {
+	public void setPhoneNumber(Integer phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 

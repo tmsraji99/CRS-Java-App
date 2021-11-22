@@ -6,7 +6,7 @@ import com.lti.model.Student;
 
 public interface CourseServiceInterface {
 
-	public void displayCourses(Student student);
+	public void displayCoursesStudent(Student student);
 
 	public void insertCourse(Course course);
 

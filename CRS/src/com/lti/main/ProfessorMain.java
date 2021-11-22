@@ -6,8 +6,12 @@ import java.util.Scanner;
 import com.lti.model.Professor;
 import com.lti.service.CourseServiceInterface;
 import com.lti.service.CourseServiceOperation;
+import com.lti.service.GradeServiceInterface;
+import com.lti.service.GradeServiceOperation;
 import com.lti.service.ProfessorServiceInterface;
 import com.lti.service.ProfessorServiceOperation;
+import com.lti.service.RegistrationServiceInterface;
+import com.lti.service.RegistrationServiceOperation;
 
 public class ProfessorMain {
 
@@ -69,6 +73,18 @@ public class ProfessorMain {
 
 			// upload grades 
 			case 5:
+				RegistrationServiceInterface registartionOperation= new RegistrationServiceOperation();
+				System.out.println("Enter the CourseID to upload grades");
+				courseId= sc.nextInt();
+				// shows the list of students enrolled in particular course
+				registartionOperation.displayRegisteredStudentsInCourse(courseId);
+				System.out.println("Enter the StudentID to upload grades");
+				int studentId= sc.nextInt();
+				System.out.println("Enter the grade");
+				String grade= sc.next();
+				// grade submission
+				GradeServiceInterface gradeOperation= new GradeServiceOperation();
+				gradeOperation.uploadGrades(studentId, courseId, grade);
 				continue;
 
 			// log out as a professor

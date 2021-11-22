@@ -4,7 +4,7 @@ public class Professor extends User{
 	private Integer professorId;
 	private String name;
 	private String gender;
-	private Long phoneNumber;
+	private Integer phoneNumber;
 	private String designation;
 	public Integer getProfessorId() {
 		return professorId;
@@ -24,10 +24,10 @@ public class Professor extends User{
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-	public Long getPhoneNumber() {
+	public Integer getPhoneNumber() {
 		return phoneNumber;
 	}
-	public void setPhoneNumber(Long phoneNumber) {
+	public void setPhoneNumber(Integer phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 	public String getDesignation() {

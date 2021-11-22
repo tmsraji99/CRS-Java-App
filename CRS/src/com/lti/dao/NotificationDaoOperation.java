@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.lti.constant.SQlQueries;
 import com.lti.model.Notification;
 import com.lti.model.Student;
 import com.lti.utils.DBUtils;
@@ -18,7 +19,7 @@ public class NotificationDaoOperation implements NotificationDaoInterfac{
 
 		try {
 
-			stmt= connection.prepareStatement(com.lti.constant.Student.SHOW_REGISTRATION_RECIEPT);
+			stmt= connection.prepareStatement(SQlQueries.SHOW_REGISTRATION_RECIEPT);
 			stmt.setInt(1,student.getStudentId());
 
 			ResultSet rs = stmt.executeQuery();
@@ -26,11 +27,11 @@ public class NotificationDaoOperation implements NotificationDaoInterfac{
 			if(rs.next())
 			{
 				Notification notification= new Notification();
-				notification.setRegistrationId(rs.getInt("NOTIFICATION_ID"));
+				notification.setRegistrationId(rs.getInt("RegistrationID"));
 				notification.setStudentId(rs.getInt("StudentID"));
-				notification.setPayableAmount(rs.getDouble("Payment"));
-				notification.setPayModeId(rs.getInt("REFERENCE_ID"));
-				notification.setTimeStamp(rs.getString("Registration_Date"));
+				notification.setPayableAmount(rs.getDouble("Payableamount"));
+				notification.setPayModeId(rs.getInt("Paymodeid"));
+				notification.setTimeStamp(rs.getString("Date_Of_Pay"));
 
 				return notification;
 

@@ -4,8 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
+import com.lti.constant.SQlQueries;
 import com.lti.model.Admin;
 import com.lti.model.Professor;
 import com.lti.model.Student;
@@ -21,16 +23,15 @@ public class UserDaoOperation implements UserDaoInterface {
 		try {
 
 			// Declaring prepared statement
-			stmt = connection.prepareStatement(com.lti.constant.User.VALIDATE_USER);
+			stmt = connection.prepareStatement(SQlQueries.VALIDATE_USER);
 			stmt.setString(1, username);
-			stmt.setString(2,pass);
+			stmt.setString(2, pass);
 			ResultSet rs = stmt.executeQuery();
 
-			if(rs.next() )
-			{
+			if (rs.next()) {
 				User checkeduser = new User();
-				checkeduser.setUserId( rs.getInt(" u.user_id") );
-				checkeduser.setRoleId(rs.getInt("r.role_profile"));
+				checkeduser.setUserId(rs.getInt("userid"));
+				checkeduser.setRoleId(rs.getInt("role_id"));
 
 				return checkeduser;
 			}
@@ -38,7 +39,7 @@ public class UserDaoOperation implements UserDaoInterface {
 		} catch (SQLException ex) {
 			System.out.println(ex.getMessage());
 		} finally {
-			closeConnection(connection, stmt);
+			// closeConnection(connection, stmt);
 		}
 //		
 		return null;
@@ -52,29 +53,29 @@ public class UserDaoOperation implements UserDaoInterface {
 
 		try {
 
-			stmt = connection.prepareStatement(com.lti.constant.Student.GET_STUDENT);
+			stmt = connection.prepareStatement(SQlQueries.GET_STUDENT);
 			stmt.setInt(1, studentId);
-
+System.out.println(stmt);
 			ResultSet rs = stmt.executeQuery();
 
-			if(rs.next() )
-			{
-				Student student= new Student();
+			if (rs.next()) {
+				Student student = new Student();
 				student.setStudentId(studentId);
 				student.setName(rs.getString("Name"));
-				student.setPhoneNumber(rs.getLong("PhoneNumber"));
+				student.setPhoneNumber(rs.getInt("PHNNUMBER"));
 				student.setGender(rs.getString("Gender"));
 				student.setSemester(rs.getInt("Semester"));
 				student.setBranch(rs.getString("Branch"));
 				student.setRegistrationStatus(rs.getBoolean("StudentRegistrationStatus"));
 				student.setScholarshipPercentage(rs.getInt("ScholarshipPercentage"));
+				student.setAdminStatus(rs.getBoolean("AdminStatus"));
 				return student;
 			}
 
 		} catch (SQLException ex) {
 			System.out.println(ex.getMessage());
 		} finally {
-			closeConnection(connection, stmt);
+			// closeConnection(connection, stmt);
 		}
 //		
 		return null;
@@ -89,14 +90,26 @@ public class UserDaoOperation implements UserDaoInterface {
 
 		try {
 			// Declaring prepared statement
-			stmt = null;
-			stmt = connection.prepareStatement("");
-			stmt.executeQuery();
+			stmt = connection.prepareStatement(SQlQueries.FETCH_ADMIN);
+			stmt.setInt(1, adminId);
+
+			ResultSet rs = stmt.executeQuery();
+
+			if (rs.next()) {
+				System.out.println("SQlQueries.FETCH_ADMIN");
+				Admin admin = new Admin();
+				admin.setAdminId(adminId);
+				admin.setName(rs.getString("Name"));
+				admin.setPhoneNumber(rs.getInt("PhoneNumber"));
+				admin.setGender(rs.getString("Gender"));
+
+				return admin;
+			}
 
 		} catch (SQLException ex) {
 			System.out.println(ex.getMessage());
 		} finally {
-			closeConnection(connection, stmt);
+			// closeConnection(connection, stmt);
 		}
 //		
 		return null;
@@ -110,16 +123,27 @@ public class UserDaoOperation implements UserDaoInterface {
 		PreparedStatement stmt = null;
 
 		try {
-			// Declaring prepared statement
 			stmt = null;
-			stmt = connection.prepareStatement("");
-			stmt.executeQuery();
-			return null;
+			stmt = connection.prepareStatement(SQlQueries.FETCH_PROFESSOR);
+			stmt.setInt(1, professorId);
+
+			ResultSet rs = stmt.executeQuery();
+
+			if (rs.next()) {
+				Professor professor = new Professor();
+				professor.setProfessorId(professorId);
+				professor.setName(rs.getString("Name"));
+				professor.setPhoneNumber(rs.getInt("PhoneNumber"));
+				professor.setGender(rs.getString("Gender"));
+				professor.setDesignation(rs.getString("Designation"));
+
+				return professor;
+			}
 
 		} catch (SQLException ex) {
 			System.out.println(ex.getMessage());
 		} finally {
-			closeConnection(connection, stmt);
+			// closeConnection(connection, stmt);
 		}
 //		
 		return null;
@@ -134,8 +158,19 @@ public class UserDaoOperation implements UserDaoInterface {
 		PreparedStatement stmt = null;
 
 		try {
-			// Declaring prepared statement and executing query
-			stmt = connection.prepareStatement("");
+			stmt = connection.prepareStatement(SQlQueries.INSERT_USER);
+			int userId = user.getUserId();
+			String username = user.getUserName();
+			String password = user.getUserPassword();
+			int roleId = user.getRoleId();
+
+			stmt.setInt(1, userId);
+			stmt.setString(2, username);
+			stmt.setString(3, password);
+
+			stmt.setInt(4, roleId);
+
+			// Executing query
 			stmt.executeUpdate();
 
 		} catch (SQLException ex) {
@@ -152,8 +187,32 @@ public class UserDaoOperation implements UserDaoInterface {
 		PreparedStatement stmt = null;
 
 		try {
-			// Declaring prepared statement and executing query
-			stmt = connection.prepareStatement("");
+			stmt = connection.prepareStatement(SQlQueries.INSERT_STUDENT);
+			int studentId = student.getStudentId();
+
+			String name = student.getName();
+			int phoneNo = student.getPhoneNumber();
+			int semester = student.getSemester();
+			String branch = student.getBranch();
+
+			String gender = student.getGender();
+			Boolean isRegistrationComplete = student.getRegistrationStatus();
+
+			int ScholarshipAllowancePercentage = student.getScholarshipPercentage();
+
+			stmt.setInt(1, studentId);
+			stmt.setString(2, name);
+			stmt.setString(4, gender);
+
+			stmt.setInt(3, phoneNo);
+			stmt.setInt(5, semester);
+			stmt.setString(6, branch);
+
+			stmt.setBoolean(7, isRegistrationComplete);
+
+			stmt.setInt(8, ScholarshipAllowancePercentage);
+			stmt.setBoolean(9, false);
+
 			stmt.executeUpdate();
 			System.out.println("Student" + " added!");
 
@@ -161,7 +220,7 @@ public class UserDaoOperation implements UserDaoInterface {
 			System.out.println(ex.getMessage());
 
 		} finally {
-			closeConnection(connection, stmt);
+			// closeConnection(connection, stmt);
 		}
 
 	}
@@ -174,9 +233,22 @@ public class UserDaoOperation implements UserDaoInterface {
 		PreparedStatement stmt = null;
 
 		try {
-			// Declaring prepared statement and executing query
-			stmt = connection.prepareStatement("");
+			stmt = connection.prepareStatement(SQlQueries.INSERT_PROFESSOR);
+			int professorId = professor.getProfessorId();
+
+			String name = professor.getName();
+			int phoneNo = professor.getPhoneNumber();
+			String gender = professor.getGender();
+			String designation = professor.getDesignation();
+
+			stmt.setInt(1, professorId);
+			stmt.setString(2, name);
+			stmt.setString(4, gender);
+			stmt.setInt(3, phoneNo);
+			stmt.setString(5, designation);
+
 			stmt.executeUpdate();
+
 			System.out.println("Professor" + " added!");
 
 		} catch (SQLException ex) {
@@ -193,20 +265,29 @@ public class UserDaoOperation implements UserDaoInterface {
 		PreparedStatement stmt = null;
 
 		try {
-			// Declaring prepared statement and executing query
-			stmt = connection.prepareStatement("");
+			stmt = connection.prepareStatement(SQlQueries.INSERT_ADMIN);
+			int adminId = admin.getAdminId();
+			String name = admin.getName();
+			int phoneNo = admin.getPhoneNumber();
+			String gender = admin.getGender();
+
+			stmt.setInt(1, adminId);
+			stmt.setString(2, name);
+			stmt.setString(4, gender);
+			stmt.setInt(3, phoneNo);
+
 			stmt.executeUpdate();
+
 			System.out.println("Admin" + " added!");
 
 		} catch (SQLException ex) {
 			System.out.println(ex.getMessage());
 		} finally {
-			closeConnection(connection, stmt);
+			// closeConnection(connection, stmt);
 		}
 
 	}
 
-	// update an user
 	public void updateUser(Integer userID, User user) {
 
 		// Establishing the connection
@@ -215,13 +296,22 @@ public class UserDaoOperation implements UserDaoInterface {
 
 		try {
 			// Declaring prepared statement and executing query
-			stmt = connection.prepareStatement("");
+			stmt = connection.prepareStatement(SQlQueries.UPDATE_USER);
+			int userId = user.getUserId();
+			String username = user.getUserName();
+			String password = user.getUserPassword();
+			int roleId = user.getRoleId();
+
+			stmt.setString(1, username);
+			stmt.setString(2, password);
+			stmt.setInt(3, roleId);
+			stmt.setInt(4, userId);
+
+			// Executing query
 			stmt.executeUpdate();
 
 		} catch (SQLException ex) {
 			System.out.println(ex.getMessage());
-		} finally {
-			closeConnection(connection, stmt);
 		}
 
 	}
@@ -235,14 +325,33 @@ public class UserDaoOperation implements UserDaoInterface {
 
 		try {
 			// Declaring prepared statement and executing query
-			stmt = connection.prepareStatement("");
+			stmt = connection.prepareStatement(SQlQueries.UPDATE_STUDENT);
+			int studentId = student.getStudentId();
+			String name = student.getName();
+			long phoneNo = student.getPhoneNumber();
+			int semester = student.getSemester();
+			String branch = student.getBranch();
+			String gender = student.getGender();
+			Boolean isRegistrationComplete = student.getRegistrationStatus();
+			int ScholarshipAllowancePercentage = student.getScholarshipPercentage();
+
+			stmt.setString(1, name);
+			stmt.setString(2, gender);
+			stmt.setLong(3, phoneNo);
+			stmt.setInt(4, semester);
+			stmt.setString(5, branch);
+			stmt.setBoolean(6, isRegistrationComplete);
+			stmt.setInt(7, ScholarshipAllowancePercentage);
+			stmt.setInt(9, studentId);
+			Boolean adminStatus = student.getAdminStatus();
+
+			stmt.setBoolean(8, adminStatus); // Executing query
 			stmt.executeUpdate();
-			System.out.println("Student details updated !");
+
+			System.out.println("Student details updated !" +stmt);
 
 		} catch (SQLException ex) {
 			System.out.println(ex.getMessage());
-		} finally {
-			closeConnection(connection, stmt);
 		}
 
 	}
@@ -256,14 +365,26 @@ public class UserDaoOperation implements UserDaoInterface {
 
 		try {
 			// Declaring prepared statement and executing query
-			stmt = connection.prepareStatement("");
+			stmt = connection.prepareStatement(SQlQueries.UPDATE_PROFESSOR);
+			int professorId = professor.getProfessorId();
+
+			String name = professor.getName();
+			long phoneNo = professor.getPhoneNumber();
+			String gender = professor.getGender();
+			String designation = professor.getDesignation();
+
+			stmt.setString(1, name);
+			stmt.setString(2, gender);
+			stmt.setLong(3, phoneNo);
+			stmt.setString(4, designation);
+			stmt.setInt(5, professorId);
+
+			// Executing query
 			stmt.executeUpdate();
 			System.out.println("Professor details updated !");
 
 		} catch (SQLException ex) {
 			System.out.println(ex.getMessage());
-		} finally {
-			closeConnection(connection, stmt);
 		}
 
 	}
@@ -277,32 +398,59 @@ public class UserDaoOperation implements UserDaoInterface {
 
 		try {
 			// Declaring prepared statement and executing query
-			stmt = connection.prepareStatement("");
+			stmt = connection.prepareStatement(SQlQueries.UPDATE_ADMIN);
+			int adminId = admin.getAdminId();
+			String name = admin.getName();
+			long phoneNo = admin.getPhoneNumber();
+			String gender = admin.getGender();
+
+			stmt.setString(1, name);
+			stmt.setString(2, gender);
+			stmt.setLong(3, phoneNo);
+			stmt.setInt(4, adminId);
+
+			// Executing query
 			stmt.executeUpdate();
 			System.out.println("Admin details updated !");
 
 		} catch (SQLException ex) {
 			System.out.println(ex.getMessage());
-		} finally {
-			closeConnection(connection, stmt);
 		}
 
 	}
 
-	// provides details of all students
 	public List<Student> displayStudents() {
 
 		Connection connection = DBUtils.getConnection();
 		PreparedStatement stmt = null;
 		try {
 
-			stmt = connection.prepareStatement("");
-			stmt.executeQuery();
-			return null;
+			stmt = connection.prepareStatement(SQlQueries.DISPLAY_STUDENTS);
+
+			ResultSet rs = stmt.executeQuery();
+
+			List<Student> list = new ArrayList<Student>();
+
+			// Creating ArrayList of student
+			while (rs.next()) {
+				Student student = new Student();
+				student.setStudentId(rs.getInt("StudentID"));
+				student.setName(rs.getString("Name"));
+				student.setPhoneNumber(rs.getInt("PhoneNumber"));
+				student.setGender(rs.getString("Gender"));
+				student.setBranch(rs.getString("Branch"));
+				student.setSemester(rs.getInt("Semester"));
+				student.setRegistrationStatus(rs.getBoolean("StudentRegistrationStatus"));
+				student.setScholarshipPercentage(rs.getInt("ScholarshipPercentage"));
+
+				list.add(student);
+
+			}
+
+			// returning list of student
+			return list;
 		} catch (SQLException ex) {
 			System.out.println(ex.getMessage());
-		} finally {
-			closeConnection(connection, stmt);
 		}
 
 		return null;
@@ -316,14 +464,29 @@ public class UserDaoOperation implements UserDaoInterface {
 
 		try {
 
-			stmt = connection.prepareStatement("");
-			stmt.executeQuery();
+			stmt = connection.prepareStatement(SQlQueries.DISPLAY_PROFESSORS);
 
-			return null;
+			ResultSet rs = stmt.executeQuery();
+
+			List<Professor> list = new ArrayList<Professor>();
+
+			// Creating ArrayList of professor
+			while (rs.next()) {
+				Professor professor = new Professor();
+				professor.setProfessorId(rs.getInt("ProfessorID"));
+				professor.setName(rs.getString("Name"));
+				professor.setPhoneNumber(rs.getInt("PhoneNumber"));
+				professor.setGender(rs.getString("Gender"));
+				professor.setDesignation(rs.getString("Designation"));
+
+				list.add(professor);
+
+			}
+
+			// returning list of professors
+			return list;
 		} catch (SQLException ex) {
 			System.out.println(ex.getMessage());
-		} finally {
-			closeConnection(connection, stmt);
 		}
 
 		return null;
@@ -336,30 +499,82 @@ public class UserDaoOperation implements UserDaoInterface {
 		PreparedStatement stmt = null;
 
 		try {
-			stmt = connection.prepareStatement("");
-			stmt.executeQuery();
-			return null;
+			stmt = connection.prepareStatement(SQlQueries.DISPLAY_ADMINS);
+
+			ResultSet rs = stmt.executeQuery();
+
+			List<Admin> list = new ArrayList<Admin>();
+
+			// Creating ArrayList of admin
+			while (rs.next()) {
+				Admin admin = new Admin();
+				admin.setAdminId(rs.getInt("AdminID"));
+				admin.setName(rs.getString("Name"));
+				admin.setPhoneNumber(rs.getInt("PhoneNumber"));
+				admin.setGender(rs.getString("Gender"));
+
+				list.add(admin);
+
+			}
+
+			return list;
 		} catch (SQLException ex) {
 			System.out.println(ex.getMessage());
-		} finally {
-			closeConnection(connection, stmt);
 		}
 
 		return null;
 	}
 
-	private void closeConnection(Connection conn, PreparedStatement stmt) {
+	@Override
+	public List<Student> displayStudentsAdminApproval() {
+		Connection connection = DBUtils.getConnection();
+		PreparedStatement stmt = null;
 		try {
-			if (stmt != null)
-				stmt.close();
-		} catch (SQLException se2) {
-		} // nothing we can do
-		try {
-			if (conn != null)
-				conn.close();
-		} catch (SQLException se) {
-			System.out.println(se.getMessage());
+
+			stmt = connection.prepareStatement(SQlQueries.DISPLAY_STUDENTS_ADMIN);
+
+			ResultSet rs = stmt.executeQuery();
+
+			List<Student> list = new ArrayList<Student>();
+
+			// Creating ArrayList of student
+			while (rs.next()) {
+				Student student = new Student();
+				student.setStudentId(rs.getInt("StudentID"));
+				student.setName(rs.getString("Name"));
+				student.setPhoneNumber(rs.getInt("PHNNUMBER"));
+				student.setGender(rs.getString("Gender"));
+				student.setBranch(rs.getString("Branch"));
+				student.setSemester(rs.getInt("Semester"));
+				student.setRegistrationStatus(rs.getBoolean("StudentRegistrationStatus"));
+				student.setScholarshipPercentage(rs.getInt("ScholarshipPercentage"));
+				student.setAdminStatus(rs.getBoolean("AdminStatus"));
+
+				list.add(student);
+
+			}
+
+			// returning list of student
+			return list;
+		} catch (SQLException ex) {
+			System.out.println(ex.getMessage());
 		}
+
+		return null;
 	}
+
+//	private void closeConnection(Connection conn, PreparedStatement stmt) {
+//		try {
+//			if (stmt != null)
+//				stmt.close();
+//		} catch (SQLException se2) {
+//		} // nothing we can do
+//		try {
+//			if (conn != null)
+//				conn.close();
+//		} catch (SQLException se) {
+//			System.out.println(se.getMessage());
+//		}
+//	}
 
 }
